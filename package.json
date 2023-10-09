@@ -1,7 +1,7 @@
 {
   "name": "js-accessor",
   "version": "1.0.0",
-  "description": "",
+  "description": "Provides accessors like get, set, assertGet, clone, and toObject for a JS object.",
   "repository": {
     "type": "git",
     "url": "https://github.com/damilope/js-accessor.git"
