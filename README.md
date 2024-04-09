@@ -6,13 +6,13 @@ Provides accessors like `get`, `set`, `assertGet`, `clone`, and `toObject` for a
 
 ## Install
 
-For npm
+For `npm`
 
 ```sh
 npm install js-accessor
 ```
 
-For yarn
+For `yarn`
 
 ```sh
 yarn add js-accessor

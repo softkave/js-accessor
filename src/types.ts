@@ -56,7 +56,7 @@ type GetAccessor<TValue> = () => TValue | undefined;
 type SetAccessor<TValue, TObject> = (
   value: TValue | undefined
 ) => WithAccessors<TObject>;
-type AssertGetAccessor<TValue> = () => TValue;
+type AssertGetAccessor<TValue> = () => NonNullable<TValue>;
 type CloneAccessor<TObject> = () => WithAccessors<TObject>;
 type ToObjectAccessor<TObject> = () => TObject;
 
