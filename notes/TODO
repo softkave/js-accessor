@@ -1,0 +1,1 @@
+- an esm pkg couldn't infer type of constructed object (was saying it's not exported)

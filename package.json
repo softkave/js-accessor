@@ -1,6 +1,6 @@
 {
   "name": "js-accessor",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Provides accessors like get, set, assertGet, clone, and toObject for a JS object",
   "author": {
     "email": "ywordk@gmail.com",
@@ -39,7 +39,8 @@
     "pretest": "npm run compile",
     "posttest": "npm run lint",
     "publish-to-npm": "npm run compile && npm publish",
-    "show-packlist": "npm run compile && npm pack --dry-run"
+    "show-packlist": "npm run compile && npm pack --dry-run",
+    "publish-to-local": "npm run compile && yalc publish"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.199",
