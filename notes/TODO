@@ -1,1 +1,3 @@
 - an esm pkg couldn't infer type of constructed object (was saying it's not exported)
+- toObject should produce an optional object
+- find a way to have TS checks in getter/setter
