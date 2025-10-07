@@ -122,3 +122,10 @@ test-local-fs/
 
 # Runtime logs
 runtime-logs/
+
+# Yalc cache
+.yalc/
+yalc.lock
+
+.DS_Store
+*.DS_Store

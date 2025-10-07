@@ -1,2 +1,2 @@
-export * from './proxy';
-export {WithAccessors} from './types';
+export * from './proxy.js';
+export {WithAccessors} from './types.js';

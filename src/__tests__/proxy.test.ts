@@ -1,10 +1,6 @@
 import {AssertionError} from 'assert';
 import {capitalize, flattenDeep, noop} from 'lodash';
-import {
-  construct,
-  kAccessorFieldPrefixKeysMap,
-  kAccessorTargetKeysMap,
-} from '../index';
+import {construct, kAccessorFieldPrefixKeys, kAccessorKeys} from '../index.js';
 
 describe('construct', () => {
   test('accessor fields present', () => {
@@ -119,6 +115,18 @@ describe('construct', () => {
     const obj = constructed.toObject();
     expect(obj).toMatchObject({first: 5});
   });
+
+  test('default toObject', () => {
+    type TestData = {
+      first: number;
+      toObject: (p1: number) => TestData;
+    };
+
+    const toObject = jest.fn().mockReturnValue({first: 1});
+    const constructed = construct<TestData>({first: 1, toObject});
+    expect(constructed.toObject(0)).toMatchObject({first: 1});
+    expect(toObject).toHaveBeenCalledWith(0);
+  });
 });
 
 interface TestData {
@@ -134,7 +142,7 @@ interface TestData {
 function toFieldAccessorNames(keys: string[]) {
   return flattenDeep(
     Object.values(keys).map(nextKey =>
-      Object.values(kAccessorFieldPrefixKeysMap).map(
+      Object.values(kAccessorFieldPrefixKeys).map(
         accessorPrefix => `${accessorPrefix}${capitalize(nextKey)}`
       )
     )
@@ -152,7 +160,7 @@ const kTestDataKeys: Array<keyof TestData> = [
 ];
 const kTestDataNonFuncKeys: Array<keyof TestData> = ['first', 'second', 'word'];
 const kTestDataAccessors = toFieldAccessorNames(kTestDataNonFuncKeys).concat(
-  Object.values(kAccessorTargetKeysMap)
+  Object.values(kAccessorKeys)
 );
 
 function generateTestData(): TestData {

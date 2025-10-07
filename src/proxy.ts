@@ -1,21 +1,21 @@
 import assert = require('assert');
 import {camelCase, get, isFunction, isString, merge, set} from 'lodash';
-import {WithAccessors} from './types';
+import {WithAccessors} from './types.js';
 
-export const kAccessorFieldPrefixKeysMap = {
+export const kAccessorFieldPrefixKeys = {
   get: 'get',
   set: 'set',
   assertGet: 'assertGet',
 } as const;
 
-export const kAccessorTargetKeysMap = {
+export const kAccessorAugmentFnKeys = {
   clone: 'clone',
   toObject: 'toObject',
 } as const;
 
-export const kAccessorKeysMap = {
-  ...kAccessorFieldPrefixKeysMap,
-  ...kAccessorTargetKeysMap,
+export const kAccessorKeys = {
+  ...kAccessorFieldPrefixKeys,
+  ...kAccessorAugmentFnKeys,
 } as const;
 
 export interface AccessorProxyOptions<T extends object> {
@@ -60,7 +60,7 @@ const defaultSetter: Required<AccessorProxyOptions<object>>['setter'] = (
 const defaultCloneResolver: Required<
   AccessorProxyOptions<object>
 >['cloneResolver'] = (target, params) => {
-  const resolver = Reflect.get(target, kAccessorTargetKeysMap.clone);
+  const resolver = Reflect.get(target, kAccessorAugmentFnKeys.clone);
   return isFunction(resolver)
     ? resolver(...params)
     : construct(merge({}, target));
@@ -69,7 +69,7 @@ const defaultCloneResolver: Required<
 const defaultToObjectResolver: Required<
   AccessorProxyOptions<object>
 >['toObjectResolver'] = (target, params) => {
-  const resolver = Reflect.get(target, kAccessorTargetKeysMap.clone);
+  const resolver = Reflect.get(target, kAccessorAugmentFnKeys.clone);
   return isFunction(resolver) ? resolver(...params) : target;
 };
 
@@ -87,19 +87,19 @@ export function construct<T extends object>(
   return new Proxy(target, {
     get(proxyTarget, originalField, receiver) {
       if (isString(originalField) && !Reflect.has(proxyTarget, originalField)) {
-        if (originalField.startsWith(kAccessorKeysMap.get)) {
+        if (originalField.startsWith(kAccessorKeys.get)) {
           const field = camelCase(
-            originalField.slice(kAccessorKeysMap.get.length)
+            originalField.slice(kAccessorKeys.get.length)
           );
           return (...params: unknown[]) => {
             return getter(proxyTarget, field, originalField, params);
           };
         } else if (
-          originalField.startsWith(kAccessorKeysMap.assertGet) &&
+          originalField.startsWith(kAccessorKeys.assertGet) &&
           !Reflect.has(proxyTarget, originalField)
         ) {
           const field = camelCase(
-            originalField.slice(kAccessorKeysMap.assertGet.length)
+            originalField.slice(kAccessorKeys.assertGet.length)
           );
           return (...params: unknown[]) => {
             const value = getter(proxyTarget, field, originalField, params);
@@ -107,11 +107,11 @@ export function construct<T extends object>(
             return value;
           };
         } else if (
-          originalField.startsWith(kAccessorKeysMap.set) &&
+          originalField.startsWith(kAccessorKeys.set) &&
           !Reflect.has(proxyTarget, originalField)
         ) {
           const field = camelCase(
-            originalField.slice(kAccessorKeysMap.set.length)
+            originalField.slice(kAccessorKeys.set.length)
           );
           return (value: unknown, ...otherParams: unknown[]) => {
             setter(proxyTarget, field, value, originalField, [
@@ -120,11 +120,11 @@ export function construct<T extends object>(
             ]);
             return receiver;
           };
-        } else if (originalField.startsWith(kAccessorKeysMap.clone)) {
+        } else if (originalField.startsWith(kAccessorKeys.clone)) {
           return (...params: unknown[]) => {
             return cloneResolver(proxyTarget, params);
           };
-        } else if (originalField.startsWith(kAccessorKeysMap.toObject)) {
+        } else if (originalField.startsWith(kAccessorKeys.toObject)) {
           return (...params: unknown[]) =>
             toObjectResolver(proxyTarget, params);
         }
